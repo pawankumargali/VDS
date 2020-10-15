@@ -1,7 +1,7 @@
 const { docClient } = require('./aws');
 const { DOMAIN_NAME, VDS_CODE_TABLE, VDS_TABLE } = require('../config');
 const { generateUniqueCode, generateQRCode } = require('../utils');
-const { uploadQRImg } = require('../services/fileUpload');
+const { uploadQRImg } = require('../services/qrImgUpload');
 
 
 exports.newVDS = async function(fields, callback) {
@@ -10,7 +10,7 @@ exports.newVDS = async function(fields, callback) {
         if(!resolutionWidth) fields.resolutionWidth=1920;
         if(!resolutionHeight) fields.resolutionHeight=1080;
         if(!orientation) fields.orientation='0';
-        console.log(fields.referenceId, VDS_CODE_TABLE);
+        
         const queryParams = {
             TableName: VDS_CODE_TABLE,
             KeyConditionExpression: "#refId = :id",
@@ -95,9 +95,8 @@ exports.getVDSByCode = async function(code, callback) {
 }
 
 
-exports.getAllVDS = async function(limitParam, callback) {
+exports.getAll = async function(limitParam, callback) {
     try {
-        console.log(limitParam);
         const limit = limitParam ? Number(limitParam) : 10;
         const params = {
             TableName: VDS_TABLE,

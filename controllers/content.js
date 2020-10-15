@@ -1,8 +1,10 @@
-const { newVDS, getVDSByCode, getAll } = require('../services/vds');
+const { uploadMediaToVDS, getContentByVDSCode, getAll } = require('../services/content');
 
-exports.createVDS = function(req, res) {
+exports.uploadContent = function(req, res) {
+    if(!req.files) return res.status(400).json({success:false, error: 'No files uploaded'});
+    if(!req.params.vdsCode) return status(400).json({success:false, error:'Route param vdsCode is required'});
     const response={};
-    newVDS(req.body, (err, data) => {
+    uploadMediaToVDS(req.files, req.params.vdsCode, (err, data) => {
         if(err) {
             response.success=false;
             response.status=500
@@ -11,17 +13,17 @@ exports.createVDS = function(req, res) {
         if(data) {
             response.success=true;
             response.status=200;
-            response.message="Created VDS successfully";
+            response.message="Added Media to VDS successfully";
             response.data=data;
         }   
         return res.status(response.status).json(response);
-    });
+    });   
 }
 
-exports.getVDS = function(req, res) {
-    if(!req.params.code) return res.status(400).json({success:false, error:'Missing route param vdsCode'});
+exports.getContentByCode = function(req, res) {
+    if(!req.params.vdsCode) return status(400).json({success:false, error:'Route param vdsCode is required'});
     const response={};
-    getVDSByCode(req.params.code, (err, data) => {
+    getContentByVDSCode(req.params.vdsCode, (err, data) => {
         if(err) {
             response.success=false;
             response.status=500
@@ -33,10 +35,10 @@ exports.getVDS = function(req, res) {
             response.data=data;
         }   
         return res.status(response.status).json(response);
-    });
+    });   
 }
 
-exports.getAllVDS = function(req, res) {
+exports.getAllContent = function(req, res) {
     const response={};
     getAll(req.query.limit, (err, data) => {
         if(err) {
@@ -51,9 +53,4 @@ exports.getAllVDS = function(req, res) {
         }
         return res.status(response.status).json(response);
     });
-}
-
-exports.renderVDSPage = function(req, res) {
-    if(!req.params.code) return res.status(400).json({success:false, error:'Missing route param vdsCode'});
-    res.send({msg:'Hello'});
 }

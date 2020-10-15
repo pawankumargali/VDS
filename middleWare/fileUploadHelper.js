@@ -10,4 +10,4 @@ const storage = multer.diskStorage({
     }
 })
    
-module.exports = multer({ storage }).array('mediaFiles', 12);
+module.exports = multer({ storage }).array('mediaFiles', 10);

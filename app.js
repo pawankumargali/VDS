@@ -17,7 +17,9 @@ app.use(cors())
 
 // ROUTES MIDDLEWARE
 const vdsRouter = require('./routes/vds');
+const contentRouter = require('./routes/content');
 app.use('/', vdsRouter);
+app.use('/', contentRouter);
 
 
 

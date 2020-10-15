@@ -10,6 +10,7 @@ const {
     COUNTER_ROW_ID,
     VDS_CODE_TABLE,
     VDS_TABLE,
+    VDS_MEDIA_TABLE,
     DOMAIN_NAME
 } = process.env;
 
@@ -23,5 +24,6 @@ module.exports = {
     COUNTER_ROW_ID, 
     VDS_CODE_TABLE,
     VDS_TABLE,
+    VDS_MEDIA_TABLE,
     DOMAIN_NAME 
 };
