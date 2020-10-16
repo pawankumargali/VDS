@@ -1,5 +1,5 @@
 const { docClient } = require('./aws');
-const { COUNTER_TABLE, COUNTER_ROW_ID } = require('../config');
+const { COUNTER_TABLE, COUNTER_ROW_ID } = require('../../config');
 
 exports.getUniqueCount= async function() {
     try {

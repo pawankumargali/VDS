@@ -1,5 +1,5 @@
 const { s3 } = require('./aws');
-const { AWS_QR_IMG_BUCKET } = require('../config');
+const { AWS_QR_IMG_BUCKET } = require('../../config');
 
 
 exports.uploadQRImg = async function(qrImg, uniqueCode) {

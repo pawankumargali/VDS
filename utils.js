@@ -1,5 +1,5 @@
 const QRCode = require('qrcode');
-const { getUniqueCount, updateUniqueCount } = require('./services/uniqueCount');
+const { getUniqueCount, updateUniqueCount } = require('./services/core/uniqueCount');
 
 // Starting number => starting code AAAAAB
 exports.generateUniqueCode = async function() {

@@ -1,9 +1,9 @@
-const { s3, docClient } = require('./aws');
+const { s3, docClient } = require('./core/aws');
 const fs = require('fs');
 const {v4:uuidv4} = require('uuid');
 const { AWS_MEDIA_BUCKET, VDS_MEDIA_TABLE } = require('../config');
 
-exports.uploadMediaToVDS = async function(files, vdsCode, callback) {
+async function uploadMediaToVDS(files, vdsCode, callback) {
     try {
         const filesInfo = [];
         for(const file of files) {
@@ -45,9 +45,7 @@ exports.uploadMediaToVDS = async function(files, vdsCode, callback) {
     }
 }
 
-
-
-exports.getContentByVDSCode = async function(vdsCode, callback) {
+async function getContentByVDSCode(vdsCode, callback) {
   try {
     const getParams = {
         TableName: VDS_MEDIA_TABLE,
@@ -64,9 +62,9 @@ exports.getContentByVDSCode = async function(vdsCode, callback) {
   }
 }
 
-exports.getAll = async function(limitParam, callback) {
+async function getAll(limitParam, callback) {
     try {
-        const limit = limitParam ? Number(limitParam) : 10;
+        const limit = !limitParam ? 10 : Number(limitParam);
         const params = {
             TableName: VDS_MEDIA_TABLE,
             Limit: limit
@@ -78,3 +76,5 @@ exports.getAll = async function(limitParam, callback) {
         return callback(err, null);
     }
 }
+
+module.exports = { uploadMediaToVDS, getContentByVDSCode, getAll };

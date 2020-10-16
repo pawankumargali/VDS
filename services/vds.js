@@ -1,10 +1,9 @@
-const { docClient } = require('./aws');
+const { docClient } = require('./core/aws');
 const { DOMAIN_NAME, VDS_CODE_TABLE, VDS_TABLE } = require('../config');
 const { generateUniqueCode, generateQRCode } = require('../utils');
-const { uploadQRImg } = require('../services/qrImgUpload');
+const { uploadQRImg } = require('./core/qrImgUpload');
 
-
-exports.newVDS = async function(fields, callback) {
+async function newVDS(fields, callback) {
     try {
     const { resolutionWidth, resolutionHeight, orientation } = fields;
         if(!resolutionWidth) fields.resolutionWidth=1920;
@@ -75,9 +74,9 @@ exports.newVDS = async function(fields, callback) {
 }
 
 
-exports.getVDSByCode = async function(code, callback) {
-    if(!code) return callback('No code found in request query params', null);
+async function getByCode(code, callback) {
     try {
+        if(!code) return callback('No code found in request query params', null);
         const params = {
             TableName: VDS_TABLE,
             Key: {
@@ -86,7 +85,7 @@ exports.getVDSByCode = async function(code, callback) {
         };
         const result = await docClient.get(params).promise();
         if(Object.keys(result).length===0) return callback('No VDS found with this code', null);
-        return callback(null, result);
+        return callback(null, result.Item);
     }
     catch(err) {
         console.log(err);
@@ -94,8 +93,28 @@ exports.getVDSByCode = async function(code, callback) {
     }
 }
 
+async function getByRefId(refId, callback) {
+    try {
+        if(!refId) return callback('No code found in request query params', null);
 
-exports.getAll = async function(limitParam, callback) {
+        const params = {
+            TableName: VDS_CODE_TABLE,
+            Key: {
+                referenceId: Number(refId)
+            }
+        };
+        const { Item } = await docClient.get(params).promise();
+        if(!Item) return callback('No vds found with this refId', null);
+        
+        await getByCode(Item.vdsCode, callback);
+    }
+    catch(err) {
+        console.log(err);
+        return callback(err, null);
+    }
+}
+
+async function getAll(limitParam, callback) {
     try {
         const limit = limitParam ? Number(limitParam) : 10;
         const params = {
@@ -109,3 +128,5 @@ exports.getAll = async function(limitParam, callback) {
         return callback(err, null);
     }
 }
+
+module.exports = { newVDS, getByCode, getByRefId, getAll }

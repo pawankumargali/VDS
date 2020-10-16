@@ -11,7 +11,8 @@ const {
     VDS_CODE_TABLE,
     VDS_TABLE,
     VDS_MEDIA_TABLE,
-    DOMAIN_NAME
+    DOMAIN_NAME,
+    API_KEY
 } = process.env;
 
 module.exports = { 
@@ -25,5 +26,6 @@ module.exports = {
     VDS_CODE_TABLE,
     VDS_TABLE,
     VDS_MEDIA_TABLE,
-    DOMAIN_NAME 
+    DOMAIN_NAME,
+    API_KEY
 };
