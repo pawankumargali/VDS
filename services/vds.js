@@ -116,7 +116,7 @@ async function getByRefId(refId, callback) {
 
 async function getAll(limitParam, callback) {
     try {
-        const limit = limitParam ? Number(limitParam) : 10;
+        const limit = !limitParam ? Number.MAX_SAFE_INTEGER : Number(limitParam);
         const params = {
             TableName: VDS_TABLE,
             Limit: limit

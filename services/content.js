@@ -1,10 +1,18 @@
 const { s3, docClient } = require('./core/aws');
 const fs = require('fs');
 const {v4:uuidv4} = require('uuid');
-const { AWS_MEDIA_BUCKET, VDS_MEDIA_TABLE } = require('../config');
+const { AWS_MEDIA_BUCKET, VDS_MEDIA_TABLE, VDS_TABLE } = require('../config');
 
 async function uploadMediaToVDS(files, vdsCode, callback) {
     try {
+        const getParams = {
+            TableName: VDS_TABLE,
+            Key: {
+                vdsCode: vdsCode
+            }
+        };
+        const { Item } = await docClient.get(getParams).promise();
+        if(!Item) return callback('Cannot upload vdsCode invalid', null);
         const filesInfo = [];
         for(const file of files) {
             const { originalname, path } = file;
@@ -54,6 +62,7 @@ async function getContentByVDSCode(vdsCode, callback) {
         }
     };
     const { Item } = await docClient.get(getParams).promise();
+    if(!Item) return callback('No content found with this vdsCode', null);
     return callback(null, Item.media);
   }   
   catch(err) {
@@ -64,7 +73,7 @@ async function getContentByVDSCode(vdsCode, callback) {
 
 async function getAll(limitParam, callback) {
     try {
-        const limit = !limitParam ? 10 : Number(limitParam);
+        const limit = !limitParam ? Number.MAX_SAFE_INTEGER : Number(limitParam);
         const params = {
             TableName: VDS_MEDIA_TABLE,
             Limit: limit
